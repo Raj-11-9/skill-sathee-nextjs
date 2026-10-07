@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 
 export const runtime = 'nodejs';
 
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
    */
 
   try {
-    const enquiry = await prisma.contactEnquiry.create({
+    const enquiry = await getPrisma().contactEnquiry.create({
       data: {
         name: d.name,
         email: d.email,
