@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model ContactEnquiry {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String   @default("")
+  company   String   @default("")
+  interest  String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+}
