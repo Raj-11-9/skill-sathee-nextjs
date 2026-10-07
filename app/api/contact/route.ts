@@ -81,23 +81,6 @@ function limited(ip: string): boolean {
 }
 
 /**
- * Escape HTML to prevent HTML injection in emails.
- */
-function esc(value: string): string {
-  return value.replace(
-    /[&<>"']/g,
-    (character) =>
-      ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;',
-      })[character]!,
-  );
-}
-
-/**
  * POST /api/contact
  */
 export async function POST(req: Request) {
@@ -240,23 +223,6 @@ Interest: ${d.interest}
 Message:
 ${d.message}`;
 
-  const html = `
-    <h2>New website enquiry</h2>
-
-    <p>
-      <b>Name:</b> ${esc(d.name)}<br>
-      <b>Email:</b> ${esc(d.email)}<br>
-      <b>Phone:</b> ${esc(d.phone || '-')}<br>
-      <b>Company:</b> ${esc(d.company || '-')}<br>
-      <b>Interest:</b> ${esc(d.interest)}
-    </p>
-
-    <p>
-      <b>Message:</b><br>
-      ${esc(d.message).replace(/\n/g, '<br>')}
-    </p>
-  `;
-
   /*
    * ------------------------------------------------------------
    * 7. Environment variables
@@ -264,9 +230,6 @@ ${d.message}`;
    */
 
   const {
-    RESEND_API_KEY,
-    CONTACT_TO_EMAIL,
-    CONTACT_FROM_EMAIL,
     CONTACT_WEBHOOK_URL,
   } = process.env;
 
@@ -277,36 +240,6 @@ ${d.message}`;
    */
 
   const tasks: Promise<Response>[] = [];
-
-  /*
-   * Send email using Resend
-   */
-
-  if (
-    RESEND_API_KEY &&
-    CONTACT_TO_EMAIL &&
-    CONTACT_FROM_EMAIL
-  ) {
-    tasks.push(
-      fetch('https://api.resend.com/emails', {
-        method: 'POST',
-
-        headers: {
-          Authorization: `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-
-        body: JSON.stringify({
-          from: CONTACT_FROM_EMAIL,
-          to: [CONTACT_TO_EMAIL],
-          reply_to: d.email,
-          subject: `New enquiry: ${d.interest} - ${d.name}`,
-          text,
-          html,
-        }),
-      }),
-    );
-  }
 
   /*
    * Optional webhook
@@ -337,7 +270,7 @@ ${d.message}`;
 
   /*
    * ------------------------------------------------------------
-   * 9. No email/webhook configured
+   * 9. No webhook configured
    * ------------------------------------------------------------
    *
    * Database has already been saved successfully,
@@ -345,26 +278,6 @@ ${d.message}`;
    */
 
   if (tasks.length === 0) {
-    if (process.env.NODE_ENV === 'production') {
-      console.error(
-        '[contact] No delivery method configured. Set RESEND_API_KEY or CONTACT_WEBHOOK_URL.',
-      );
-
-      return NextResponse.json(
-        {
-          error:
-            'Your message was saved, but email delivery is temporarily unavailable.',
-        },
-        {
-          status: 503,
-        },
-      );
-    }
-
-    console.log(
-      '[contact] (dev) enquiry received:\n' + text,
-    );
-
     return NextResponse.json({
       ok: true,
       saved: true,
@@ -373,7 +286,7 @@ ${d.message}`;
 
   /*
    * ------------------------------------------------------------
-   * 10. Execute email/webhook tasks
+   * 10. Execute webhook tasks
    * ------------------------------------------------------------
    */
 
