@@ -3378,4 +3378,178 @@ header nav::after {
   }
 }
 
+/* Keep intrinsic content from widening responsive layouts. */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+.w,
+.w > *,
+.hg > *,
+.split > *,
+.tr > *,
+.h2g > *,
+.cg > *,
+.pg > *,
+.sg > *,
+.abg > *,
+.fgd > * {
+  min-width: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+@media (max-width: 960px) {
+  .fg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fg div {
+    padding: 28px 24px 20px 0;
+    border-right: 0;
+  }
+
+  .fg div:nth-child(odd) {
+    border-right: 1px solid var(--bd);
+  }
+
+  .fg div:last-child {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  #training {
+    padding-block: 80px;
+  }
+
+  .hero2 {
+    padding-block: 128px 88px;
+  }
+
+  .ai::after {
+    width: min(800px, 110vw);
+    height: min(800px, 110vw);
+    right: -35vw;
+    top: -30vw;
+  }
+
+  .fg div {
+    padding: 24px 18px 20px 0;
+  }
+
+  .proof {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero2 {
+    padding-block: 112px 72px;
+  }
+
+  .hero2 p {
+    font-size: 16px;
+  }
+
+  .fg {
+    grid-template-columns: 1fr;
+    margin-top: 40px;
+  }
+
+  .fg div,
+  .fg div:nth-child(odd) {
+    padding: 22px 0 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .fg div:last-child {
+    border-bottom: 0;
+  }
+
+  .fg h3 {
+    font-size: 22px;
+  }
+
+  #training {
+    padding-block: 64px;
+  }
+
+  .fin {
+    padding-block: 56px;
+  }
+
+  .cv span {
+    font-size: clamp(48px, 16vw, 76px);
+  }
+
+  .tb span {
+    margin-left: auto;
+    max-width: 55%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .w {
+    padding-inline: 12px;
+  }
+
+  header {
+    padding-inline: 8px;
+  }
+
+  header nav {
+    padding-inline: 10px;
+    gap: 8px;
+  }
+
+  .logo {
+    max-width: 44vw;
+    height: 40px;
+  }
+
+  .rt {
+    gap: 6px;
+  }
+
+  .ic {
+    width: 40px;
+    height: 40px;
+  }
+
+  .fc,
+  .fcl {
+    font-size: 10px;
+  }
+
+  .fcl {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .hv {
+    padding-inline: 4px;
+  }
+
+  .kp {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kp div {
+    overflow-wrap: anywhere;
+  }
+}
+
 
